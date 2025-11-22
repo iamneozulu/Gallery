@@ -3,6 +3,16 @@ import { GLTFLoader } from './node_modules/three/examples/jsm/Addons.js';
 
 let renderer, scene, camera, raycaster, loader;
 
+const launchButton = document.getElementById('launchButton');
+const loadingManager = new THREE.LoadingManager();
+loadingManager.onLoad = () => {
+    launchButton.style.display = 'block';
+    setTimeout(() => launchButton.classList.add('visible'), 10);
+};
+loadingManager.onError = (url) => {
+    console.error(`There was an error loading ${url}`);
+};
+
 init();
 animate();
 
@@ -24,11 +34,8 @@ function init() {
     raycaster = new THREE.Raycaster();
 
     // Loader-------------------------------------------------------------------------------------
-    loader = new GLTFLoader();
+    loader = new GLTFLoader(loadingManager);
     // Load Gallery Scene
-
-
-
     loader.load('./public/models/gallery_scene.gltf', function (gltf) {
         const Gallery = gltf.scene;
         scene.add(Gallery);
@@ -46,6 +53,10 @@ function init() {
     // Event Listeners----------------------------------------------------------------------------
     window.addEventListener('resize', onWindowResize);
     window.addEventListener('click', onMouseClick, false);
+
+    document.getElementById('launchButton').onclick = function() {
+        document.getElementById('loadingScreen').style.display = 'none';
+    };
     //--------------------------------------------------------------------------------------------
 }
 

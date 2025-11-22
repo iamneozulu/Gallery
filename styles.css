@@ -5,3 +5,43 @@ body, html {
     width: 100%;
     font-family: Arial, sans-serif;
 }
+/* ---------------------------------------------------------*/
+
+#loadingScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #25020c;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+/* ---------------------------------------------------------*/
+
+#launchButton {
+    display: none;
+    margin-top: 24px;
+    font-size: 1.2em;
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    background: #e5ff00;
+    color: #39490d;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.8s cubic-bezier(.77,0,.18,1);
+}
+
+#launchButton.visible {
+    opacity: 1;
+    display: block;
+}
+
+/* ---------------------------------------------------------*/
