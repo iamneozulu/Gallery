@@ -1,5 +1,6 @@
 import * as THREE from './node_modules/three';
 import { GLTFLoader } from './node_modules/three/examples/jsm/Addons.js';
+import { FrameMaker } from './modelFrames.js';
 
 let renderer, scene, camera, raycaster, loader;
 
@@ -43,12 +44,23 @@ function init() {
         console.error(error);
     });
     // Load Solar System Frame
-    FrameMaker('./public/models/solar_system_frame.gltf', [0, 0.75, -5.6], [1, 1, 1]);
+    const SolarSystemFrame = new FrameMaker(
+        loader,
+        scene,
+        './public/models/solar_system_frame.gltf',
+        [0, 0.75, -5.6],
+        [1, 1, 1],
+        'https://en.wikipedia.org/wiki/Solar_System'
+    );
     // Load Periodic Table Frame
-    FrameMaker('./public/models/periodic_table_frame.gltf', [-2.85, 1, -3], [0.7, 0.7, 0.7]);
-
-    //--------------------------------------------------------------------------------------------
-
+    const PeriodicTableFrame = new FrameMaker(
+        loader,
+        scene,
+        './public/models/periodic_table_frame.gltf',
+        [-2.85, 1, -3],
+        [0.7, 0.7, 0.7],
+        'https://en.wikipedia.org/wiki/Periodic_table'
+    );
 
     // Event Listeners----------------------------------------------------------------------------
     window.addEventListener('resize', onWindowResize);
@@ -84,18 +96,6 @@ function onMouseClick(event) {
             alert(intersectedObject.userData.info);
         }
     }
-}
-
-// Frame maker
-function FrameMaker(texturePath, position, scale) {
-    loader.load(texturePath, function (gltf) {
-        const model = gltf.scene;
-        model.position.set(position[0], position[1], position[2]);
-        model.scale.set(scale[0], scale[1], scale[2]);
-        scene.add(model);
-    }, undefined, function (error) {
-        console.error(error);
-    });
 }
 
 function animate() {
