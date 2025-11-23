@@ -1,6 +1,7 @@
 import * as THREE from './node_modules/three';
 import { GLTFLoader } from './node_modules/three/examples/jsm/Addons.js';
 import { FrameMaker } from './modelFrames.js';
+import { SceneMaker } from './modelFrames.js';
 
 let renderer, scene, camera, raycaster, loader;
 
@@ -37,12 +38,11 @@ function init() {
     // Loader-------------------------------------------------------------------------------------
     loader = new GLTFLoader(loadingManager);
     // Load Gallery Scene
-    loader.load('./public/models/gallery_scene.gltf', function (gltf) {
-        const Gallery = gltf.scene;
-        scene.add(Gallery);
-    }, undefined, function (error) {
-        console.error(error);
-    });
+    const GalleryScene = new SceneMaker(
+        loader,
+        scene,
+        './public/models/gallery_scene.gltf'
+    );
     // Load Solar System Frame
     const SolarSystemFrame = new FrameMaker(
         loader,
@@ -66,7 +66,11 @@ function init() {
     window.addEventListener('resize', onWindowResize);
     window.addEventListener('click', onMouseClick, false);
 
-    document.getElementById('launchButton').onclick = function() {
+    const canvas = renderer.domElement;
+    canvas.addEventListener('click', onMouseClick, false);
+
+    document.getElementById('launchButton').onclick = function(e) {
+        e.stopPropagation();
         document.getElementById('loadingScreen').style.display = 'none';
     };
     //--------------------------------------------------------------------------------------------
@@ -82,6 +86,7 @@ function onWindowResize() {
 // Handles mouse click events
 function onMouseClick(event) {
     event.preventDefault();
+
     const mouse = new THREE.Vector2(
         (event.clientX / window.innerWidth) * 2 - 1,
         -(event.clientY / window.innerHeight) * 2 + 1
@@ -92,8 +97,13 @@ function onMouseClick(event) {
 
     if (intersects.length > 0) {
         const intersectedObject = intersects[0].object;
-        if (intersectedObject.userData.info) {
-            alert(intersectedObject.userData.info);
+
+        while(intersectedObject){
+            if(intersectedObject.userData.url){
+                window.open(intersectedObject.userData.url, '_blank');
+                return;
+            }
+            intersectedObject = intersectedObject.parent;
         }
     }
 }
