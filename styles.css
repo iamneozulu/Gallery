@@ -13,13 +13,19 @@ body, html {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: #25020c;
-    color: white;
+    background: #ffffff;
+    color: rgb(0, 0, 0);
+    opacity: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 2000;
+}
+
+#loadingScreen.visible {
+    opacity: 0.5;
+    transition: opacity 0.5s ease-in-out;
 }
 
 /* ---------------------------------------------------------*/
@@ -31,8 +37,8 @@ body, html {
     padding: 10px 24px;
     border-radius: 8px;
     border: none;
-    background: #e5ff00;
-    color: #39490d;
+    background: #5c5c5c;
+    color: #ffffff;
     font-weight: bold;
     cursor: pointer;
     opacity: 0;
@@ -40,8 +46,8 @@ body, html {
 }
 
 #launchButton.visible {
-    opacity: 1;
-    display: block;
+    opacity: 10;
+    transition: opacity 0.8s cubic-bezier(.77,0,.18,1);
 }
 
 /* ---------------------------------------------------------*/
