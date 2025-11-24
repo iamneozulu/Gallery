@@ -5,13 +5,16 @@ import { SceneMaker } from './modelFrames.js';
 
 let renderer, scene, camera, raycaster, loader;
 
-const launchButton = document.getElementById('launchButton');
 const loadingScreen = document.getElementById('loadingScreen');
+const backgroundLayer = document.getElementById('backgroundLayer');
+
+let isLoaded = false;
+
 const loadingManager = new THREE.LoadingManager();
 loadingManager.onLoad = () => {
-    launchButton.style.display = 'block';
+    isLoaded = true;
+    setTimeout(() => backgroundLayer.classList.add('visible'), 10);
     setTimeout(() => loadingScreen.classList.add('visible'), 10);
-    setTimeout(() => launchButton.classList.add('visible'), 10);
 };
 loadingManager.onError = (url) => {
     console.error(`There was an error loading ${url}`);
@@ -68,16 +71,28 @@ function init() {
     window.addEventListener('resize', onWindowResize);
     window.addEventListener('click', onMouseClick, false);
 
-    const canvas = renderer.domElement;
-    canvas.addEventListener('click', onMouseClick, false);
+    loadingScreen.onclick = function(e) {
+        e.stopPropagation();
 
-    document.getElementById('launchButton').onclick = function(e) {
-        e.stopPropagation();
-        document.getElementById('loadingScreen').style.display = 'none';
-    };
-    document.getElementById('loadingScreen').onclick = function(e) {
-        e.stopPropagation();
-        // this.style.display = 'none';
+        if (!isLoaded) return;
+
+        loadingScreen.classList.add('hidden');
+        backgroundLayer.classList.add('hidden');
+
+        loadingScreen.addEventListener('transitionend', function handler(event ) {
+            if (event.propertyName === 'opacity') {
+                loadingScreen.style.display = 'none';
+                loadingScreen.removeEventListener('transitionend', handler);
+            }
+        });
+
+        backgroundLayer.addEventListener('transitionend', function handler(event ) {
+            if (event.propertyName === 'opacity') {
+                backgroundLayer.style.display = 'none';
+                backgroundLayer.removeEventListener('transitionend', handler);
+            }
+        });
+
     };
     //--------------------------------------------------------------------------------------------
 }
