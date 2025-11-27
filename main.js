@@ -3,7 +3,7 @@ import { GLTFLoader } from './node_modules/three/examples/jsm/Addons.js';
 import { FrameMaker } from './modelFrames.js';
 import { SceneMaker } from './modelFrames.js';
 
-let renderer, scene, camera, raycaster, loader;
+let renderer, scene, camera, raycaster, loader, light;
 
 const loadingScreen = document.getElementById('loadingScreen');
 const backgroundLayer = document.getElementById('backgroundLayer');
@@ -31,6 +31,7 @@ function init() {
 
     // Scene
     scene = new THREE.Scene();
+    // Blue
     scene.background = new THREE.Color(0x87ceeb);
 
     // Camera
@@ -46,26 +47,12 @@ function init() {
     const GalleryScene = new SceneMaker(
         loader,
         scene,
-        './public/models/gallery_scene.gltf'
+        './public/models/gallery_scene_mk2.gltf'
     );
-    // Load Solar System Frame
-    const SolarSystemFrame = new FrameMaker(
-        loader,
-        scene,
-        './public/models/solar_system_frame.gltf',
-        [0, 0.75, -5.6],
-        [1, 1, 1],
-        'https://en.wikipedia.org/wiki/Solar_System'
-    );
-    // Load Periodic Table Frame
-    const PeriodicTableFrame = new FrameMaker(
-        loader,
-        scene,
-        './public/models/periodic_table_frame.gltf',
-        [-2.85, 1, -3],
-        [0.7, 0.7, 0.7],
-        'https://en.wikipedia.org/wiki/Periodic_table'
-    );
+
+    // Lighting-----------------------------------------------------------------------------------
+    light = new THREE.AmbientLight(0xffffff, 2);
+    scene.add(light);
 
     // Event Listeners----------------------------------------------------------------------------
     window.addEventListener('resize', onWindowResize);
