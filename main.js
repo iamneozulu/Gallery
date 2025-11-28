@@ -3,7 +3,7 @@ import { GLTFLoader } from './node_modules/three/examples/jsm/Addons.js';
 import { FrameMaker } from './modelFrames.js';
 import { SceneMaker } from './modelFrames.js';
 
-let renderer, scene, camera, raycaster, loader, light;
+let renderer, scene, camera, raycaster, controls, loader, light;
 
 const loadingScreen = document.getElementById('loadingScreen');
 const backgroundLayer = document.getElementById('backgroundLayer');
@@ -35,8 +35,10 @@ function init() {
     scene.background = new THREE.Color(0x87ceeb);
 
     // Camera
-    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 1.75, 4);
+
+    // Controls
 
     // Raycaster
     raycaster = new THREE.Raycaster();
@@ -51,7 +53,7 @@ function init() {
     );
 
     // Lighting-----------------------------------------------------------------------------------
-    light = new THREE.AmbientLight(0xffffff, 2);
+    light = new THREE.AmbientLight(0xffffff, 3);
     scene.add(light);
 
     // Event Listeners----------------------------------------------------------------------------
@@ -81,6 +83,9 @@ function init() {
         });
 
     };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+
     //--------------------------------------------------------------------------------------------
 }
 
@@ -114,6 +119,19 @@ function onMouseClick(event) {
             intersectedObject = intersectedObject.parent;
         }
     }
+}
+
+function onWheel(event){
+  event.preventDefault();  // optional
+  const dir = new THREE.Vector3();
+  camera.getWorldDirection(dir);
+  dir.normalize();
+  // for horizontal-only forward:
+  dir.y = 0;
+  dir.normalize();
+
+  const moveDistance = event.deltaY * 0.005;  // tune this value
+  camera.position.add(dir.multiplyScalar(moveDistance));
 }
 
 function animate() {
